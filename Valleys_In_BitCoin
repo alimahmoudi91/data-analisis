@@ -1,0 +1,15 @@
+import numpy as np
+import scipy.signal
+import yfinance
+from matplotlib import pyplot as plt
+
+df=yfinance.download(tickers="BTC-USD",start="2023-01-01",end="2024-01-01",interval="1d")
+df.index=np.arange(len(df))
+
+Valleys=scipy.signal.find_peaks(-df["Open"])
+x=Valleys[0]
+y=df["Open"].iloc[Valleys[0]]
+plt.figure(figsize=(12,6))
+df["Open"].plot()
+plt.scatter(x,y,color="red")
+plt.show()
