@@ -1,0 +1,27 @@
+import numpy as np
+import yfinance as yf
+from sklearn.linear_model import LinearRegression
+from matplotlib import pyplot as plt
+df = yf.download(tickers="BTC-USD", start="2023-01-01", end="2024-01-01", interval="1d")
+df['Days'] = np.arange(len(df))
+X = df[['Days', 'Volume']].values
+y = df['Open'].values
+model = LinearRegression()
+model.fit(X, y)
+y_pred = model.predict(X)
+fig = plt.figure(figsize=(12, 8))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(df['Days'], df['Volume'], y, color='blue', label='Actual Prices')
+days_grid, volume_grid = np.meshgrid(
+    np.linspace(df['Days'].min(), df['Days'].max(), 30),
+    np.linspace(df['Volume'].min(), df['Volume'].max(), 30)
+)
+X_grid = np.c_[days_grid.ravel(), volume_grid.ravel()]
+y_grid_pred = model.predict(X_grid).reshape(days_grid.shape)
+ax.plot_surface(days_grid, volume_grid, y_grid_pred, color='red', alpha=0.3, label='Predicted Surface')
+ax.set_xlabel('Days')
+ax.set_ylabel('Volume')
+ax.set_zlabel('Bitcoin Open Price')
+ax.set_title('3D Linear Regression with Two Inputs for Bitcoin Open Price')
+plt.legend()
+plt.show()
