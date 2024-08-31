@@ -1,0 +1,21 @@
+import numpy as np
+import yfinance as yf
+from matplotlib import pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+df = yf.download(tickers="BTC-USD", start="2023-01-01", end="2024-01-01", interval="1d")
+df.index = np.arange(len(df))
+X = np.arange(len(df["Open"])).reshape(-1, 1)
+y = df["Open"]
+X_poly=PolynomialFeatures(degree=3).fit_transform(X)
+model = LinearRegression()
+model.fit(X_poly, y)
+y_pred = model.predict(X_poly)
+plt.figure(figsize=(10, 6))
+df["Open"].plot(label='Actual Prices')
+plt.plot(X, y_pred, color='red', label=' Regression Curve (Degree 3)')
+plt.xlabel('Days')
+plt.ylabel('Bitcoin Open Price')
+plt.title(' Regression (Degree 3) for Bitcoin Open Price Prediction')
+plt.legend()
+plt.show()
