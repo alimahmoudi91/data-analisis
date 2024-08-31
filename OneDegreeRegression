@@ -1,0 +1,15 @@
+import numpy as np
+import yfinance
+from matplotlib import pyplot as plt
+from sklearn.linear_model import LinearRegression
+df=yfinance.download(tickers="BTC-USD",start="2023-01-01",end="2024-01-01",interval="1d")
+df.index=np.arange(len(df))
+X=np.arange(len(df["Open"])).reshape(-1,1)
+y=df["Open"]
+model=LinearRegression()
+model.fit(X,y)
+model.fit(X,y)
+y_pred=model.predict(X)
+plt.plot(X,y_pred)
+df["Open"].plot()
+plt.show()
